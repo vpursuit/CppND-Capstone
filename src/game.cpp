@@ -9,26 +9,34 @@
 
 using namespace sim;
 
-Game::Game(std::size_t grid_width, std::size_t grid_height, int particleCount, double velocityRange)
-        : grid_width(grid_width), grid_height(grid_height),
-          particleCount(particleCount), velocityRange(velocityRange),
+Game::Game(std::size_t grid_width,
+           std::size_t grid_height,
+           std::size_t kMsPerPhysicsSimulation,
+           std::size_t particleCount,
+           double velocityRange)
+        : grid_width(grid_width),
+          grid_height(grid_height),
+          particleCount(particleCount),
+          velocityRange(velocityRange),
           engine(dev()),
           random_w(0, static_cast<int>(grid_width)),
           random_h(0, static_cast<int>(grid_height)),
           random_v(-velocityRange, velocityRange),
           _particles(SimulationObjects()),
-          physics2D(PatrticlePhysics2D(grid_width, grid_height, _particles)){
-
+          physics2D(PatrticlePhysics2D(grid_width, grid_height, kMsPerPhysicsSimulation, _particles)) {
 }
 
 Game::~Game() {
+    physics2D.stop();
+
     // Wait for all threads to terminate
-    for (auto &ftr : futures)
-        ftr.wait();
+    for (auto &t: _threads) {
+        t->join();
+    }
 }
 
 void Game::Run(Controller const &controller, Renderer &renderer,
-               std::size_t target_frame_duration, std::size_t target_physics_interval) {
+               std::size_t target_frame_duration) {
 
     bool running = true;
 
@@ -36,21 +44,12 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     PlaceParticles(particleCount);
 
     // Start a physics thread
+    _threads.push_back(std::make_unique<std::thread>(std::thread([&]() { physics2D.run(); })));
 
-    std::promise<void> exitSignal;
-
-    //Fetch std::future object associated with promise
-    std::future<void> futureObj = exitSignal.get_future();
-
-    // Starting Thread & move the future object in lambda function by reference
-    std::thread th(&PatrticlePhysics2D::run, physics2D, target_physics_interval, std::move(futureObj));
-
-
-    //futures.emplace_back(std::async(std::launch::async, &PatrticlePhysics2D::run, physics2D, target_physics_interval));
 
     // TODO Start an AI thread
 
-    int frame_count = 0;
+    std::size_t frame_count = 0;
 
     std::chrono::time_point<std::chrono::system_clock> lastUpdate;
     std::chrono::time_point<std::chrono::system_clock> title_timestamp;
@@ -96,14 +95,6 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
     }
 
-    //Set the value in promise
-    exitSignal.set_value();
-    th.join();
-    /**
-    physics2D.stop();
-    for (auto &ftr : futures)
-        ftr.wait();
-        **/
 }
 
 void Game::PlaceParticles(int const count) {

@@ -5,14 +5,14 @@
 #include <thread>
 #include "particlePhysics2D.h"
 
-void PatrticlePhysics2D::run(std::size_t target_physics_interval, std::future<void> futureObj) {
+void PatrticlePhysics2D::run() {
 
     std::chrono::time_point<std::chrono::system_clock> lastUpdate;
 
     // init stop watch
     lastUpdate = std::chrono::system_clock::now();
 
-    while (futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout) {
+    while (stopRequested() == false) {
 
         // sleep at every iteration to reduce CPU usage
         std::this_thread::sleep_for(std::chrono::milliseconds(1));

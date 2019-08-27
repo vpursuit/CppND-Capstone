@@ -14,14 +14,17 @@ using namespace sim;
 class Game {
 
 public:
-    Game(std::size_t grid_width, std::size_t grid_height, int particleCount, double velocity);
+    Game(std::size_t grid_width,
+         std::size_t grid_height,
+         std::size_t physicsInterval,
+         std::size_t particleCount,
+         double velocity);
 
     ~Game();
 
     void Run(Controller const &controller,
              Renderer &renderer,
-             std::size_t target_frame_duration,
-             std::size_t target_physics_interval);
+             std::size_t target_frame_duration);
 
     int GetSize() const;
 
@@ -31,6 +34,7 @@ private:
     SimulationObjects _particles;
     std::size_t grid_width;
     std::size_t grid_height;
+    std::size_t physicsInterval;
     int particleCount;
     double velocityRange;
 
@@ -40,7 +44,7 @@ private:
     std::uniform_int_distribution<int> random_h;
     std::uniform_real_distribution<double> random_v;
 
-    std::vector<std::future<void>> futures;
+    std::vector<std::unique_ptr<std::thread>> _threads;
 
     void PlaceParticles(int const count);
 
