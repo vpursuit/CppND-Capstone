@@ -3,7 +3,7 @@
 #include "SDL.h"
 
 #include "particle.h"
-#import "simulationObject.h"
+#include "simulationObject.h"
 #include <future>
 #include <thread>
 
