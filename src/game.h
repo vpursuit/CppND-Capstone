@@ -7,6 +7,7 @@
 #include "controller.h"
 #include "renderer.h"
 #include "particle.h"
+#include "particlePhysics2D.h"
 
 using namespace sim;
 
@@ -26,6 +27,7 @@ public:
 
 private:
 
+    PatrticlePhysics2D physics2D;
     SimulationObjects _particles;
     std::size_t grid_width;
     std::size_t grid_height;
@@ -39,13 +41,8 @@ private:
     std::uniform_real_distribution<double> random_v;
 
     std::vector<std::future<void>> futures;
-    std::mutex particleMutex;
 
     void PlaceParticles(int const count);
-
-    void _update(double duration);
-
-    void doPhysics(std::size_t target_physics_interval);
 
 };
 

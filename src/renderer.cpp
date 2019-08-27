@@ -116,7 +116,7 @@ void Renderer::render(SimulationObjects &particles) {
 
     int fraction = 1;
     SDL_Renderer *renderer = sdl_renderer;
-    particles.map([renderer, fraction](std::shared_ptr<SimulationObject> obj, size_t i) {
+    particles.map([renderer, fraction](std::unique_ptr<SimulationObject> &obj, size_t i) {
         Particle &part = obj->getParticle();
         SDL_Rect block;
         block.w = obj->getSize();

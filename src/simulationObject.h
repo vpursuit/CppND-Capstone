@@ -9,6 +9,7 @@
 #include <thread>
 #include <vector>
 #include "particle.h"
+#include "synchronizedList.h"
 
 using namespace sim;
 
@@ -25,6 +26,8 @@ public:
 
     SimulationObject() : part(Particle()) {};
 
+    virtual ~SimulationObject(){};
+
     Particle &getParticle() { return part; };
 
     virtual RGBA getColor() = 0;
@@ -36,58 +39,14 @@ protected:
 
 };
 
-class SimulationObjects {
-public:
-    SimulationObjects() : _numSimulationObjects(0) {}
+typedef SynchronizedList<SimulationObject> SimulationObjects;
 
-    int getNumSimulationObjects() {
-        std::lock_guard<std::mutex> uLock(_mutex);
-        return _numSimulationObjects;
-    }
-
-    bool isParticleAvailable() {
-        std::lock_guard<std::mutex> myLock(_mutex);
-        return !_simobjects.empty();
-    }
-
-    std::shared_ptr<SimulationObject> popBack() {
-        // perform vector modification under the lock
-        std::lock_guard<std::mutex> uLock(_mutex);
-
-        // remove last vector element from queue
-        std::shared_ptr<SimulationObject> v = std::move(_simobjects.back());
-        _simobjects.pop_back();
-        --_numSimulationObjects;
-
-        return v; // will not be copied due to return value optimization (RVO) in C++
-    }
-
-    void map(const std::function<void(std::shared_ptr<SimulationObject> part, size_t)> &f) {
-        // perform closure modification under the lock
-        std::lock_guard<std::mutex> uLock(_mutex);
-        size_t i = 0;
-        for (std::shared_ptr<SimulationObject> part: _simobjects) {
-            ++i;
-            f(part, i);
-        }
-    }
-
-    void pushBack(std::shared_ptr<SimulationObject> &&v) {
-        // perform vector modification under the lock
-        std::lock_guard<std::mutex> uLock(_mutex);
-        _simobjects.emplace_back(std::move(v));
-        ++_numSimulationObjects;
-    }
-
-private:
-    std::vector<std::shared_ptr<SimulationObject>> _simobjects; // list of all _simobjects in the simulationn
-    std::mutex _mutex;
-    size_t _numSimulationObjects;
-};
 
 class Molecule : public SimulationObject {
 public:
     Molecule(RGBA color, size_t size) : SimulationObject(), color(color), size(size) {};
+    ~Molecule(){};
+
     RGBA getColor(){ return color; }
     size_t getSize(){ return size; }
 private:
