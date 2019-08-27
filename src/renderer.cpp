@@ -13,6 +13,22 @@ Renderer::Renderer(const std::size_t screen_width,
           grid_height(grid_height),
           particle_limit(particle_limit) {
 
+
+    int numdrivers = SDL_GetNumRenderDrivers();
+    std::cout << "Render driver count: " << numdrivers << std::endl;
+    for (int i = 0; i < numdrivers; i++) {
+        SDL_RendererInfo drinfo;
+        SDL_GetRenderDriverInfo(0, &drinfo);
+        std::cout << "Driver name (" << i << "): " << drinfo.name << std::endl;
+        if (drinfo.flags & SDL_RENDERER_SOFTWARE) std::cout << " the renderer is a software fallback" << std::endl;
+        if (drinfo.flags & SDL_RENDERER_ACCELERATED)
+            std::cout << " the renderer uses hardware acceleration" << std::endl;
+        if (drinfo.flags & SDL_RENDERER_PRESENTVSYNC)
+            std::cout << " present is synchronized with the refresh rate " << std::endl;
+        if (drinfo.flags & SDL_RENDERER_TARGETTEXTURE)
+            std::cout << " the renderer supports rendering to texture" << std::endl;
+    }
+
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "SDL could not initialize.\n";
@@ -20,7 +36,7 @@ Renderer::Renderer(const std::size_t screen_width,
     }
 
     // Create Window
-    sdl_window = SDL_CreateWindow("Parfticle Simulation",
+    sdl_window = SDL_CreateWindow("Particle Simulation",
                                   SDL_WINDOWPOS_CENTERED,
                                   SDL_WINDOWPOS_CENTERED,
                                   screen_width,
