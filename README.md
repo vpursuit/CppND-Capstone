@@ -1,8 +1,9 @@
-# CPPND: Capstone Snake Game Example
+# CPPND: Capstone of Peter Trebing
 
-This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+This is the Udacity C++ Nanodegree Capstone project of Peter Trebing.
 
-<img src="snake_game.gif"/>
+This project is a simplified simulation of the atmosphere and the greenhouse effect. 
+It implements a particle system which represents different athmospheric gases like N2, O2 and CO2. The simulation of physics and representation is done in separate and independent threads.
 
 The Capstone Project gives you a chance to integrate what you've learned throughout this program. This project will become an important part of your portfolio to share with current and future colleagues and employers.
 
@@ -28,4 +29,4 @@ In this project, you can build your own C++ application or extend this Snake gam
 1. Clone this repo.
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
-4. Run it: `./SnakeGame`.
+4. Run it: `./CollisionSim`.
