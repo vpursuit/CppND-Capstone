@@ -11,8 +11,6 @@
 #include "particle.h"
 #include "synchronizedList.h"
 
-using namespace sim;
-
 struct RGBA {
     uint8_t r;
     uint8_t g;
@@ -57,22 +55,22 @@ private:
 
 class N2 : public Molecule {
 public:
-    N2() : Molecule({100, 100, 100, 255}, 10) {
-        part.setMass(2.0 * 14.0067);
+    N2() : Molecule({0, 102, 153, 255}, 6) {
+        part.setMass(10.0 * 14.0067);
     }
 };
 
 class O2 : public Molecule {
 public:
-    O2() : Molecule({0, 0, 255, 255}, 8) {
-        part.setMass(2.0 * 14.0067);
+    O2() : Molecule({255, 102, 52, 255}, 6) {
+        part.setMass(10.0 * 14.0067);
     }
 };
 
 class CO2 : public Molecule {
 public:
-    CO2() : Molecule({255, 0, 0, 255}, 5) {
-        part.setMass(2.0 * 14.0067);
+    CO2() : Molecule({0, 0, 0, 255}, 10) {
+        part.setMass(10000.0 * 14.0067);
     }
 };
 

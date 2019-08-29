@@ -7,8 +7,6 @@
 
 #include "particle.h"
 
-using namespace sim;
-
 class Physics {
 public:
     void update(std::vector<Particle> particles);

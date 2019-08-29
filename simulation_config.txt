@@ -1,0 +1,23 @@
+# Configuration file for the particle collision simulation
+
+# Windows size
+window_width=400
+window_height=400
+
+# Target frames per second (may not be reached)
+fps=25
+
+#Particles
+particle_count=500
+
+#render only every n'th particle
+particle_render_limit=1
+
+#Velocity range from -n .. n
+particle_velocity_range=500
+
+# Set physics simulation to maximum speed
+physic_interval_ms=0
+
+# Maximum number of collsions to resolve per intervall
+collision_limit=1000000

@@ -13,50 +13,51 @@ template<typename T>
 class SynchronizedList {
 
 public:
+
     SynchronizedList() {}
 
     ~SynchronizedList() {}
 
     std::size_t size() {
-        std::lock_guard<std::mutex> uLock(_mutex);
+        std::lock_guard<std::recursive_mutex> uLock(_mutex);
         return _items.size();
     }
 
     bool empty() {
-        std::lock_guard<std::mutex> myLock(_mutex);
+        std::lock_guard<std::recursive_mutex> myLock(_mutex);
         return _items.empty();
     }
 
-    std::unique_ptr<T> popBack() {
+    std::shared_ptr<T> popBack() {
         // perform vector modification under the lock
-        std::lock_guard<std::mutex> uLock(_mutex);
+        std::lock_guard<std::recursive_mutex> uLock(_mutex);
 
         // remove last vector element from queue
-        std::unique_ptr<T> v = std::move(_items.back());
+        std::shared_ptr<T> v = std::move(_items.back());
         _items.pop_back();
 
         return v; // will not be copied due to return value optimization (RVO) in C++
     }
 
-    void pushBack(std::unique_ptr<T> &&v) {
+    void pushBack(std::shared_ptr<T> &&v) {
         // perform vector modification under the lock
-        std::lock_guard<std::mutex> uLock(_mutex);
+        std::lock_guard<std::recursive_mutex> uLock(_mutex);
         _items.emplace_back(std::move(v));
     }
 
-    void map(const std::function<void(std::unique_ptr<T> &part, size_t)> &f) {
+    void map(const std::function<bool(std::shared_ptr<T> &part, size_t)> &f) {
         // perform lambda operation under the lock
-        std::lock_guard<std::mutex> uLock(_mutex);
+        std::lock_guard<std::recursive_mutex> uLock(_mutex);
         size_t i = 0;
         for (auto& part: _items) {
             ++i;
-            f(part, i);
+            if (f(part, i) ) break;
         }
     }
 
 private:
-    std::vector<std::unique_ptr<T>> _items; // list of all items in the simulationn
-    std::mutex _mutex;
+    std::vector<std::shared_ptr<T>> _items; // list of all items in the simulationn
+    std::recursive_mutex _mutex;
 
 };
 

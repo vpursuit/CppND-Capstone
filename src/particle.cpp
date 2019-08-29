@@ -13,12 +13,8 @@
  * implies agreement with all terms and conditions of the accompanying
  * software licence.
  */
-
-
 #include <assert.h>
 #include "particle.h"
-
-using namespace sim;
 
 void Particle::integrate(double duration) {
 
@@ -29,14 +25,14 @@ void Particle::integrate(double duration) {
     if (duration <= 0.0f) return;
     // assert(duration > 0.0);
 
-    // _update linear position.
+    // integrate linear position.
     position.addScaledVector(velocity, duration);
 
     // Work out the acceleration from the force
     Vector3 resultingAcc = acceleration;
     resultingAcc.addScaledVector(forceAccum, inverseMass);
 
-    // _update linear velocity from the acceleration.
+    // integrate linear velocity from the acceleration.
     velocity.addScaledVector(resultingAcc, duration);
 
     // Impose drag.

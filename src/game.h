@@ -9,8 +9,6 @@
 #include "particle.h"
 #include "particlePhysics2D.h"
 
-using namespace sim;
-
 class Game {
 
 public:
@@ -18,6 +16,7 @@ public:
          std::size_t grid_height,
          std::size_t physicsInterval,
          std::size_t particleCount,
+         std::size_t collision_limit,
          double velocity);
 
     ~Game();
@@ -48,6 +47,7 @@ private:
 
     void PlaceParticles(int const count);
 
+    void placeMolecule(Molecule *molecule);
 };
 
 #endif

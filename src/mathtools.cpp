@@ -13,11 +13,7 @@
  * implies agreement with all terms and conditions of the accompanying
  * software licence.
  */
-
-
 #include "mathtools.h"
-
-using namespace sim;
 
 const Vector3 Vector3::GRAVITY = Vector3(0, -9.81, 0);
 const Vector3 Vector3::HIGH_GRAVITY = Vector3(0, -19.62, 0);
@@ -31,17 +27,17 @@ const Vector3 Vector3::Z = Vector3(0, 0, 1);
 /*
  * Definition of the sleep epsilon extern.
  */
-double sim::sleepEpsilon = ((double) 0.3);
+double sleepEpsilon = ((double) 0.3);
 
 /*
  * Functions to change sleepEpsilon.
  */
-void sim::setSleepEpsilon(double value) {
-    sim::sleepEpsilon = value;
+void setSleepEpsilon(double value) {
+    sleepEpsilon = value;
 }
 
-double sim::getSleepEpsilon() {
-    return sim::sleepEpsilon;
+double getSleepEpsilon() {
+    return sleepEpsilon;
 }
 
 
