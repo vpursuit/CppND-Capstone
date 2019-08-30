@@ -54,7 +54,7 @@ void PatrticlePhysics2D::run() {
                 std::chrono::system_clock::now() - lastUpdate).count();
 
         // Its time to render a frame to met the fps spec.
-        if (timeSinceLastUpdate >= target_physics_interval) {
+        if (timeSinceLastUpdate >= config.getPhysicIntervalMs()) {
             integrate(static_cast<double>(timeSinceLastUpdate) / 1000.0f);
             lastUpdate = std::chrono::system_clock::now();
         }
@@ -66,6 +66,7 @@ void PatrticlePhysics2D::run() {
 void PatrticlePhysics2D::collider() {
 
     std::chrono::time_point<std::chrono::system_clock> lastUpdate;
+    std::chrono::time_point<std::chrono::system_clock> collisionDetectionStart;
 
     // init stop watch
     lastUpdate = std::chrono::system_clock::now();
@@ -79,10 +80,10 @@ void PatrticlePhysics2D::collider() {
         long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::system_clock::now() - lastUpdate).count();
 
-        // Its time to render a frame to met the fps spec.
-        if (timeSinceLastUpdate >= target_physics_interval) {
-            detectCollisions();
+        if (timeSinceLastUpdate >= config.getPhysicIntervalMs()) {
+            std::size_t collisionsDetected = detectCollisions();
             lastUpdate = std::chrono::system_clock::now();
+            collisions += collisionsDetected;
         }
 
     }
@@ -94,8 +95,8 @@ PatrticlePhysics2D::~PatrticlePhysics2D() {
 
 void PatrticlePhysics2D::integrate(double duration) {
 
-    std::size_t width = grid_width;
-    std::size_t height = grid_height;
+    std::size_t width = config.getWindowWidth();
+    std::size_t height = config.getWindowHeight();
 
     _particles.map([duration, width, height](std::shared_ptr<SimulationObject> &obj, size_t i) -> bool {
 
@@ -108,24 +109,26 @@ void PatrticlePhysics2D::integrate(double duration) {
         bool boxCollision = false;
         if (position.x <= 0.0) {
             velocity.x *= -1.0;
+            position.x = 0.0f;
             // position.x = grid_width;
             boxCollision = true;
         } else if (position.x > width) {
             velocity.x *= -1.0;
-            //position.x = 0.0;
+            position.x = width;
             boxCollision = true;
         }
         if (position.y <= 0.0) {
             velocity.y *= -1.0;
-            //position.y = grid_height;
+            position.y = 0.0f;
             boxCollision = true;
         } else if (position.y > height) {
             velocity.y *= -1.0;
-            //position.y = 0.0;
+            position.y = height;
             boxCollision = true;
         }
         if (boxCollision) {
             part.setVelocity(velocity);
+            part.setPosition(position);
         }
 
         return false;
@@ -133,16 +136,17 @@ void PatrticlePhysics2D::integrate(double duration) {
 
 }
 
-void PatrticlePhysics2D::detectCollisions() {
+std::size_t PatrticlePhysics2D::detectCollisions() {
 
     // Count helps to fulfill the maximum collision limit
-    std::size_t count = 0;
+    std::size_t checkCount = 0;
+    std::size_t collisionCount = 0;
 
     _particles.map([&](std::shared_ptr<SimulationObject> &obj1, size_t i) -> bool {
 
         _particles.map([&](std::shared_ptr<SimulationObject> &obj2, size_t j) -> bool {
 
-            if (++count >= collision_limit) return true; //stop map
+            if (++checkCount >= config.getCollisionLimit()) return true; //stop map
             if (i == j) return false; // do not collide particle with itself, but continue
 
             Particle &part1 = obj1->getParticle();
@@ -161,23 +165,23 @@ void PatrticlePhysics2D::detectCollisions() {
             Point r2 = {p2.x + size2, p2.y + size2};
 
             if (hasIntersection(l1, r1, l2, r2)) {
-
-
-                //collidingPairs.push_back(std::make_pair(obj1, obj2));
-
-                resolveCollisions(obj1, obj2, part1, part2);
-
+                ++collisionCount;
+                resolveCollisions(obj1, obj2);
             }
-            return false;
+            return false; // go on mapping list
         });
-        return false;
+        return false; // go on mapping list
     });
+    return collisionCount;
 }
 
 void
 PatrticlePhysics2D::resolveCollisions(std::shared_ptr<SimulationObject> &obj1,
-                                      std::shared_ptr<SimulationObject> &obj2,
-                                      Particle &part1, Particle &part2) const {
+                                      std::shared_ptr<SimulationObject> &obj2) {
+
+    Particle &part1 = obj1->getParticle();
+    Particle &part2 = obj2->getParticle();
+
     Vector3 p1 = part1.getPosition();
     double size1 = static_cast<double>(obj1->getSize());
 
@@ -190,9 +194,10 @@ PatrticlePhysics2D::resolveCollisions(std::shared_ptr<SimulationObject> &obj1,
     Point l2 = {p2.x, p2.y};
     Point r2 = {p2.x + size2, p2.y + size2};
 
-
     // Collision has occurred
-    Vector3 displacement = getDisplacement(l1, r1, l2, r2) * 0.501f;
+    Vector3 displacement = getDisplacement(l1, r1, l2, r2);
+    part1.setPosition(p1 + displacement);
+    part2.setPosition(p2 - displacement);
 
     Vector3 v1 = part1.getVelocity();
     double m1 = part1.getMass();
@@ -200,24 +205,32 @@ PatrticlePhysics2D::resolveCollisions(std::shared_ptr<SimulationObject> &obj1,
     double m2 = part2.getMass();
 
     // FInd math in the following paper'
-// https://imada.sdu.dk/~rolf/Edu/DM815/E10/2dcollisions.pdf
+    // https://imada.sdu.dk/~rolf/Edu/DM815/E10/2dcollisions.pdf
     Vector3 normal = (p2 - p1);
-    Vector3 unitNormal = normal * (1.0f / sqrt(normal.squareMagnitude()));
+    double length = sqrt(normal.squareMagnitude());
+    Vector3 unitNormal = normal * (1.0f / length);
     Vector3 unitTangent = Vector3(-unitNormal.y, unitNormal.x, 0.0f);
 
     // Dot Product Tangent
     double v1t = v1.scalarProduct(unitTangent);
+    if (isnan(v1t)) return;
     double v2t = v2.scalarProduct(unitTangent);
+    if (isnan(v2t)) return;
 
     // Dot Product Normal
     double v1n = v1.scalarProduct(unitNormal);
+    if (isnan(v1n)) return;
     double v2n = v2.scalarProduct(unitNormal);
+    if (isnan(v2n)) return;
 
+    double velocityRange = (double) config.getParticleVelocityRange();
     double m1addm2 = m1 + m2;
     double v1nNext = (v1n * (m1 - m2) + 2.0f * m2 * v2n) / m1addm2;
+    if (isnan(v1nNext)) return;
     double v2nNext = (v2n * (m2 - m1) + 2.0f * m1 * v1n) / m1addm2;
+    if (isnan(v2nNext)) return;
 
-    // Update ball velocities
+    // Update molecule velocities
     Vector3 v1normalNext = unitNormal * v1nNext;
     Vector3 v2normalNext = unitNormal * v2nNext;
 
@@ -230,49 +243,5 @@ PatrticlePhysics2D::resolveCollisions(std::shared_ptr<SimulationObject> &obj1,
     part1.setVelocity(v1Next);
     part2.setVelocity(v2Next);
 
-    part1.setPosition(p1 + displacement);
-    part2.setPosition(p2 - displacement);
-}
-
-void PatrticlePhysics2D::resolveCollisions() {
-    // Now work out dynamic collisions
-    float fEfficiency = 1.00f;
-    /*
-    for (auto c : collidingPairs) {
-        sBall *b1 = c.first, *b2 = c.second;
-
-        // Distance between balls
-        float fDistance = sqrtf((b1->px - b2->px) * (b1->px - b2->px) + (b1->py - b2->py) * (b1->py - b2->py));
-
-        // Normal
-        float nx = (b2->px - b1->px) / fDistance;
-        float ny = (b2->py - b1->py) / fDistance;
-
-        // Tangent
-        float tx = -ny;
-        float ty = nx;
-
-        // Dot Product Tangent
-        float dpTan1 = b1->vx * tx + b1->vy * ty;
-        float dpTan2 = b2->vx * tx + b2->vy * ty;
-
-        // Dot Product Normal
-        float dpNorm1 = b1->vx * nx + b1->vy * ny;
-        float dpNorm2 = b2->vx * nx + b2->vy * ny;
-
-        // Conservation of momentum in 1D
-        float m1 = fEfficiency * (dpNorm1 * (b1->mass - b2->mass) + 2.0f * b2->mass * dpNorm2) / (b1->mass + b2->mass);
-        float m2 = fEfficiency * (dpNorm2 * (b2->mass - b1->mass) + 2.0f * b1->mass * dpNorm1) / (b1->mass + b2->mass);
-
-        // Update ball velocities
-        b1->vx = tx * dpTan1 + nx * m1;
-        b1->vy = ty * dpTan1 + ny * m1;
-        b2->vx = tx * dpTan2 + nx * m2;
-        b2->vy = ty * dpTan2 + ny * m2;
-    }
-
-    // Remove collisions
-    collidingPairs.clear();
-*/
 }
 

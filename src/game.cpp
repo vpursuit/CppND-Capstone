@@ -7,22 +7,18 @@
 #include "simulationObject.h"
 #include "particlePhysics2D.h"
 
-Game::Game(std::size_t grid_width,
-           std::size_t grid_height,
-           std::size_t kMsPerPhysicsSimulation,
-           std::size_t particleCount,
-           std::size_t collision_limit,
-           double velocityRange)
-        : grid_width(grid_width),
-          grid_height(grid_height),
-          particleCount(particleCount),
-          velocityRange(velocityRange),
-          engine(dev()),
-          random_w(0, static_cast<int>(grid_width)),
-          random_h(0, static_cast<int>(grid_height)),
-          random_v(-velocityRange, velocityRange),
-          _particles(SimulationObjects()),
-          physics2D(PatrticlePhysics2D(grid_width, grid_height, kMsPerPhysicsSimulation, collision_limit, _particles)) {
+Game::Game(Configuration configuration) :
+        config(configuration),
+        engine(dev()),
+        random_w(0, static_cast<int>(configuration.getWindowWidth())),
+        random_h(0, static_cast<int>(configuration.getWindowHeight())),
+        random_v(-configuration.getParticleVelocityRange(), configuration.getParticleVelocityRange()),
+        _particles(SimulationObjects()),
+        physics2D(PatrticlePhysics2D(configuration, _particles)) {
+
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine engine(seed);
+
 }
 
 Game::~Game() {
@@ -40,13 +36,11 @@ void Game::Run(Controller const &controller, Renderer &renderer,
     bool running = true;
 
     // Create the items
-    PlaceParticles(particleCount);
+    PlaceParticles(config.getParticleCount());
 
     // Start a physics thread
     _threads.push_back(std::make_unique<std::thread>(std::thread([&]() { physics2D.run(); })));
     _threads.push_back(std::make_unique<std::thread>(std::thread([&]() { physics2D.collider(); })));
-
-    // TODO Start an AI thread
 
     std::size_t frame_count = 0;
 
@@ -82,7 +76,8 @@ void Game::Run(Controller const &controller, Renderer &renderer,
             long timeSinceLastWindowsUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(
                     frame_end - title_timestamp).count();
             if (timeSinceLastWindowsUpdate >= 1000) {
-                renderer.UpdateWindowTitle(particleCount, frame_count);
+                renderer.UpdateWindowTitle(config.getParticleCount(), frame_count,
+                                           physics2D.getCollisionsSincelastCall());
                 frame_count = 0;
                 title_timestamp = frame_end;
             }
@@ -123,17 +118,15 @@ void Game::placeMolecule(Molecule *molecule) {
     while (true) {
         x = random_w(engine);
         y = random_h(engine);
-        if (x >= 0 && x <= grid_width && y >= 0 && y <= grid_height) {
+        if (x >= 0 && x <= config.getWindowWidth() && y >= 0 && y <= config.getWindowHeight()) {
             std::unique_ptr<SimulationObject> m(molecule);
             Particle &part = m->getParticle();
             part.setPosition(x, y, 0.0);
             part.setVelocity(random_v(engine), random_v(engine), 0.0);
-            part.setDamping(0.99);
-            part.setMass(1.0);
+            part.setAcceleration(Vector3(Vector3::GRAVITY) * -config.getGravityFactor());
+            part.setDamping(config.getDamping());
             _particles.pushBack(std::move(m));
             break;
         }
     }
 }
-
-int Game::GetSize() const { return particleCount; }

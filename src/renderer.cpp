@@ -2,21 +2,12 @@
 #include <iostream>
 #include <string>
 
-Renderer::Renderer(const std::size_t screen_width,
-                   const std::size_t screen_height,
-                   const std::size_t grid_width,
-                   const std::size_t grid_height,
-                   const std::size_t particle_limit)
-        : screen_width(screen_width),
-          screen_height(screen_height),
-          grid_width(grid_width),
-          grid_height(grid_height),
-          particle_render_limit(particle_limit) {
+Renderer::Renderer(Configuration configuration)
+        : config(configuration) {
 
-
-    int numdrivers = SDL_GetNumRenderDrivers();
+    std::size_t numdrivers = SDL_GetNumRenderDrivers();
     std::cout << "Render driver count: " << numdrivers << std::endl;
-    for (int i = 0; i < numdrivers; i++) {
+    for (std::size_t i = 0; i < numdrivers; i++) {
         SDL_RendererInfo drinfo;
         SDL_GetRenderDriverInfo(0, &drinfo);
         std::cout << "Driver name (" << i << "): " << drinfo.name << std::endl;
@@ -39,8 +30,8 @@ Renderer::Renderer(const std::size_t screen_width,
     sdl_window = SDL_CreateWindow("Particle Simulation",
                                   SDL_WINDOWPOS_CENTERED,
                                   SDL_WINDOWPOS_CENTERED,
-                                  screen_width,
-                                  screen_height,
+                                  config.getWindowWidth(),
+                                  config.getWindowHeight(),
                                   SDL_WINDOW_SHOWN);
 
     if (nullptr == sdl_window) {
@@ -73,7 +64,8 @@ void Renderer::render(SimulationObjects &particles) {
     SDL_SetRenderDrawColor(sdl_renderer, 50, 204, 255, 0xFF);
     SDL_RenderClear(sdl_renderer);
 
-    std:size_t fraction = particle_render_limit;
+    std:
+    size_t fraction = config.getParticleRenderLimit();
 
     SDL_Renderer *renderer = sdl_renderer;
     particles.map([renderer, fraction](std::shared_ptr<SimulationObject> &obj, size_t i) -> bool {
@@ -98,7 +90,8 @@ void Renderer::render(SimulationObjects &particles) {
     SDL_RenderPresent(sdl_renderer);
 }
 
-void Renderer::UpdateWindowTitle(int particleCount, int fps) {
-    std::string title{"Molecules: " + std::to_string(particleCount) + " FPS: " + std::to_string(fps)};
+void Renderer::UpdateWindowTitle(std::size_t particleCount, std::size_t fps, std::size_t collPerSec) {
+    std::string title{"Molecules: " + std::to_string(particleCount) + " FPS: " + std::to_string(fps) + " Coll/sec: " +
+                      std::to_string(collPerSec)};
     SDL_SetWindowTitle(sdl_window, title.c_str());
 }

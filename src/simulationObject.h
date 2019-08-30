@@ -69,8 +69,8 @@ public:
 
 class CO2 : public Molecule {
 public:
-    CO2() : Molecule({0, 0, 0, 255}, 10) {
-        part.setMass(10000.0 * 14.0067);
+    CO2() : Molecule({0, 0, 0, 255}, 6) {
+        part.setMass(10.0 * 14.0067);
     }
 };
 

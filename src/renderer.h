@@ -5,28 +5,23 @@
 #include "SDL.h"
 #include "particle.h"
 #include "simulationObject.h"
+#include "configuration.h"
 
 class Renderer {
 public:
-    Renderer(const std::size_t screen_width, const std::size_t screen_height,
-             const std::size_t grid_width, const std::size_t grid_height,
-             size_t particle_render_limit);
+
+    Renderer(Configuration configuration);
 
     ~Renderer();
 
     void render(SimulationObjects &particles);
 
-    void UpdateWindowTitle(int score, int fps);
+    void UpdateWindowTitle(std::size_t score, std::size_t fps, std::size_t collPerSecond);
 
 private:
     SDL_Window *sdl_window;
     SDL_Renderer *sdl_renderer;
-
-    const std::size_t screen_width;
-    const std::size_t screen_height;
-    const std::size_t grid_width;
-    const std::size_t grid_height;
-    const std::size_t particle_render_limit;
+    Configuration config;
 };
 
 #endif

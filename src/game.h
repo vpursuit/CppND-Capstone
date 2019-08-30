@@ -8,16 +8,12 @@
 #include "renderer.h"
 #include "particle.h"
 #include "particlePhysics2D.h"
+#include "configuration.h"
 
 class Game {
 
 public:
-    Game(std::size_t grid_width,
-         std::size_t grid_height,
-         std::size_t physicsInterval,
-         std::size_t particleCount,
-         std::size_t collision_limit,
-         double velocity);
+    Game(Configuration configuration);
 
     ~Game();
 
@@ -25,17 +21,12 @@ public:
              Renderer &renderer,
              std::size_t target_frame_duration);
 
-    int GetSize() const;
-
 private:
+
+    Configuration config;
 
     PatrticlePhysics2D physics2D;
     SimulationObjects _particles;
-    std::size_t grid_width;
-    std::size_t grid_height;
-    std::size_t physicsInterval;
-    int particleCount;
-    double velocityRange;
 
     std::random_device dev;
     std::mt19937 engine;

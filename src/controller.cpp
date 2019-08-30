@@ -14,6 +14,14 @@ void Controller::HandleInput(bool &running) const {
 
             case SDL_KEYDOWN :
                 switch (e.key.keysym.sym) {
+                    case SDLK_PLUS:
+                        //ChangeDirection(snake, Snake::Direction::kUp,
+                        //Snake::Direction::kDown);
+                        break;
+                    case SDLK_MINUS:
+                        //ChangeDirection(snake, Snake::Direction::kUp,
+                        //Snake::Direction::kDown);
+                        break;
                     case SDLK_UP:
                         //ChangeDirection(snake, Snake::Direction::kUp,
                         //Snake::Direction::kDown);
