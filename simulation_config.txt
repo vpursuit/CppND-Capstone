@@ -1,14 +1,14 @@
 # Configuration file for the particle collision simulation
 
 # Windows size
-window_width=400
+window_width=600
 window_height=400
 
 # Target frames per second (may not be reached)
 fps=60
 
 #Particles
-particle_count=400
+particle_count=100
 
 #render only every n'th particle
 particle_render_limit=1
@@ -23,7 +23,7 @@ physic_interval_ms=0
 collision_limit=10000000
 
 # Take away energy from the particle system
-damping=0.7
+damping=0.6
 
 # the n'th factor of gravity
 gravity_factor=100.0

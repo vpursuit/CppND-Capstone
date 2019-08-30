@@ -56,7 +56,7 @@ private:
 class N2 : public Molecule {
 public:
     N2() : Molecule({0, 102, 153, 255}, 6) {
-        part.setMass(10.0 * 14.0067);
+        part.setMass(50.0 * 14.0067);
     }
 };
 
@@ -70,7 +70,7 @@ public:
 class CO2 : public Molecule {
 public:
     CO2() : Molecule({0, 0, 0, 255}, 6) {
-        part.setMass(10.0 * 14.0067);
+        part.setMass(100.0 * 14.0067);
     }
 };
 
