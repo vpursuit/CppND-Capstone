@@ -22,7 +22,7 @@ public:
 
 class CO2 : public Molecule {
 public:
-    CO2() : Molecule({0, 0, 0, 255}, 10) {
+    CO2() : Molecule({0, 0, 0, 255}, 16) {
         sensitivity = sensitive;
         part.setMass(100.0 * 14.0067);
     }

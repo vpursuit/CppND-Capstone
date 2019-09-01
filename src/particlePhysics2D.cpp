@@ -117,6 +117,7 @@ void PatrticlePhysics2D::integrate(double duration) {
     _particles.map([duration, width, height](std::shared_ptr<SimulationObject> &obj, size_t i) -> bool {
 
         Particle &part = obj->getParticle();
+        size_t size = obj->getSize();
 
         part.integrate(duration);
 
@@ -128,18 +129,18 @@ void PatrticlePhysics2D::integrate(double duration) {
             position.x = 0.0f;
             // position.x = grid_width;
             boxCollision = true;
-        } else if (position.x > width) {
+        } else if (position.x + size > width) {
             velocity.x *= -1.0;
-            position.x = width;
+            position.x = width - size;
             boxCollision = true;
         }
         if (position.y <= 0.0) {
             velocity.y *= -1.0;
             position.y = 0.0f;
             boxCollision = true;
-        } else if (position.y > height) {
+        } else if (position.y + size > height) {
             velocity.y *= -1.0;
-            position.y = height;
+            position.y = height - size;
             boxCollision = true;
         }
         if (boxCollision) {
@@ -191,9 +192,9 @@ std::size_t PatrticlePhysics2D::detectCollisions() {
     return collisionCount;
 }
 
-void
-PatrticlePhysics2D::resolveCollisions(std::shared_ptr<SimulationObject> &obj1,
-                                      std::shared_ptr<SimulationObject> &obj2) {
+void PatrticlePhysics2D::resolveCollisions(
+        std::shared_ptr<SimulationObject> &obj1,
+        std::shared_ptr<SimulationObject> &obj2) {
 
     Particle &part1 = obj1->getParticle();
     Particle &part2 = obj2->getParticle();
@@ -272,3 +273,18 @@ void PatrticlePhysics2D::changeEnergy(double factor) {
     });
 }
 
+bool PatrticlePhysics2D::removeNonSensitiveObject() {
+    int pos = -1;
+    _particles.map([&](std::shared_ptr<SimulationObject> &obj, size_t i) mutable -> bool {
+        if (obj->getSensitivity() == Sensitivity::insensitive) {
+            pos = i;
+            return true;
+        }
+        return false;
+    });
+    if (pos >= 0) {
+        _particles.erase(pos);
+        return true;
+    }
+    return false;
+}

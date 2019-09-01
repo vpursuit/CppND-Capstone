@@ -33,7 +33,9 @@ In this project, you can build your own C++ application or extend this Snake gam
 
 ## USAGE
 
-| Shortcut        | Action                | 
-| :-------------: |:---------------------:| 
-| CTRL-Q          | exits the simulation  |
-| ...		      | ...
+| Shortcut        | Action                        | 
+| :-------------: |:-----------------------------:| 
+| H               | accelerate the CO2 molecules  |
+| +               | add more N2 and O2 molecules  |
+| -               | remove N2 and O2 molecuules   |
+| CTRL-Q          | exits the simulation          |

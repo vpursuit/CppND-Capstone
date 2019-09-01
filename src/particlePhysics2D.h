@@ -45,6 +45,11 @@ public:
     void changeEnergy(double factor);
 
     /**
+     * Return number of sensitive simulation objects
+     */
+    bool removeNonSensitiveObject();
+
+    /**
      * Returns the number of resolved detected and resolved collsions since last call.
      * Example: When called once per second, you get the #collisions/second
      */

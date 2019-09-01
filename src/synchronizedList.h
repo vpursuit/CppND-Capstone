@@ -31,11 +31,9 @@ public:
     std::shared_ptr<T> popBack() {
         // perform vector modification under the lock
         std::lock_guard<std::recursive_mutex> uLock(_mutex);
-
         // remove last vector keys from queue
         std::shared_ptr<T> v = std::move(_items.back());
         _items.pop_back();
-
         return v; // will not be copied due to return value optimization (RVO) in C++
     }
 
@@ -43,15 +41,24 @@ public:
         // perform vector modification under the lock
         std::lock_guard<std::recursive_mutex> uLock(_mutex);
         _items.emplace_back(std::move(v));
+
+    }
+
+    void erase(std::size_t pos) {
+        // perform vector modification under the lock
+        std::lock_guard<std::recursive_mutex> uLock(_mutex);
+        if (pos < _items.size() - 1) {
+            _items.erase(_items.begin() + pos);
+        }
     }
 
     void map(const std::function<bool(std::shared_ptr<T> &part, size_t)> &f) {
         // perform lambda operation under the lock
         std::lock_guard<std::recursive_mutex> uLock(_mutex);
         size_t i = 0;
-        for (auto& part: _items) {
+        for (auto &part: _items) {
             ++i;
-            if (f(part, i) ) break;
+            if (f(part, i)) break;
         }
     }
 

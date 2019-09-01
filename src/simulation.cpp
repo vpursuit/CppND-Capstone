@@ -77,11 +77,10 @@ void Simulation::Run(Controller &controller, Renderer &renderer,
                 placeMolecule(new O2(), Vector3());
                 config.setParticleCount(config.getParticleCount() + 2);
             }
-            if (keys.minus && _particles.size() > 2) {
-                _particles.popBack();
-                _particles.popBack();
-                config.setParticleCount(config.getParticleCount() - 2);
+            if (keys.minus) {
+                physics2D.removeNonSensitiveObject();
             }
+
             //if (keys.minus) physics2D.removeParticle();
             keys = KeyState{false, false, false};
 

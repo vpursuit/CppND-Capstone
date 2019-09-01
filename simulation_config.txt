@@ -23,7 +23,7 @@ physic_interval_ms=0
 collision_limit=10000000
 
 # Take away energy from the particle system
-damping=0.4
+damping=0.5
 
 # the n'th factor of gravity
 gravity_factor=100.0
