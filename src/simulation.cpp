@@ -1,13 +1,17 @@
+//
+// Created by Trebing, Peter on 2019-08-27.
+//
 #include <iostream>
 #include <future>
 #include <thread>
-#include "game.h"
+#include "simulation.h"
 #include "SDL.h"
 #include "particle.h"
 #include "simulationObject.h"
 #include "particlePhysics2D.h"
+#include "molecules.h"
 
-Game::Game(Configuration configuration) :
+Simulation::Simulation(Configuration configuration) :
         config(configuration),
         engine(dev()),
         random_w(0, static_cast<int>(configuration.getWindowWidth())),
@@ -21,7 +25,7 @@ Game::Game(Configuration configuration) :
 
 }
 
-Game::~Game() {
+Simulation::~Simulation() {
     physics2D.stop();
 
     // Wait for all threads to terminate
@@ -30,10 +34,11 @@ Game::~Game() {
     }
 }
 
-void Game::Run(Controller const &controller, Renderer &renderer,
-               std::size_t target_frame_duration) {
+void Simulation::Run(Controller &controller, Renderer &renderer,
+                     std::size_t target_frame_duration) {
 
     bool running = true;
+    KeyState keys = KeyState{false, false, false};
 
     // Create the items
     PlaceParticles(config.getParticleCount());
@@ -64,9 +69,23 @@ void Game::Run(Controller const &controller, Renderer &renderer,
         if (timeSinceLastUpdate >= target_frame_duration) {
 
             // Input, integrate, render - the main game loop.
-            controller.HandleInput(running);
+            controller.HandleInput(running, keys);
+            if (keys.heat) physics2D.changeEnergy(2.0f);
+            if (keys.cool) physics2D.changeEnergy(0.5f);
+            if (keys.plus) {
+                placeMolecule(new N2(), Vector3());
+                placeMolecule(new O2(), Vector3());
+                config.setParticleCount(config.getParticleCount() + 2);
+            }
+            if (keys.minus && _particles.size() > 2) {
+                _particles.popBack();
+                _particles.popBack();
+                config.setParticleCount(config.getParticleCount() - 2);
+            }
+            //if (keys.minus) physics2D.removeParticle();
+            keys = KeyState{false, false, false};
 
-            // Compute physics in extra thread and  only render here
+            // Compute physics in extra thread and only render here
             renderer.render(_particles);
 
             frame_count++;
@@ -91,7 +110,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 
 }
 
-void Game::PlaceParticles(int const count) {
+void Simulation::PlaceParticles(int const count) {
 
     int N2Count = (count * 78) / 100;
     int O2Count = (count * 21) / 100;
@@ -101,19 +120,19 @@ void Game::PlaceParticles(int const count) {
     std::cout << "CO2Count = " << CO2Count << std::endl;
     int i = 0;
     while (i++ < N2Count) {
-        placeMolecule(new N2());
+        placeMolecule(new N2(), Vector3(random_v(engine), random_v(engine), 0.0));
     }
     i = 0;
     while (i++ < O2Count) {
-        placeMolecule(new O2());
+        placeMolecule(new O2(), Vector3(random_v(engine), random_v(engine), 0.0));
     }
     i = 0;
     while (i++ < CO2Count) {
-        placeMolecule(new CO2());
+        placeMolecule(new CO2(), Vector3(random_v(engine), random_v(engine), 0.0));
     }
 }
 
-void Game::placeMolecule(Molecule *molecule) {
+void Simulation::placeMolecule(Molecule *molecule, Vector3 velocity) {
     int x, y;
     while (true) {
         x = random_w(engine);
@@ -122,7 +141,7 @@ void Game::placeMolecule(Molecule *molecule) {
             std::unique_ptr<SimulationObject> m(molecule);
             Particle &part = m->getParticle();
             part.setPosition(x, y, 0.0);
-            part.setVelocity(random_v(engine), random_v(engine), 0.0);
+            part.setVelocity(velocity);
             part.setAcceleration(Vector3(Vector3::GRAVITY) * -config.getGravityFactor());
             part.setDamping(config.getDamping());
             _particles.pushBack(std::move(m));

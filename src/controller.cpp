@@ -1,8 +1,11 @@
+//
+// Created by Trebing, Peter on 2019-08-27.
+//
 #include "controller.h"
-#include <iostream>
 #include "SDL.h"
 
-void Controller::HandleInput(bool &running) const {
+void Controller::HandleInput(bool &running, KeyState &keys) {
+
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
 
@@ -15,31 +18,20 @@ void Controller::HandleInput(bool &running) const {
             case SDL_KEYDOWN :
                 switch (e.key.keysym.sym) {
                     case SDLK_PLUS:
-                        //ChangeDirection(snake, Snake::Direction::kUp,
-                        //Snake::Direction::kDown);
+                        keys.plus = true;
+                        //SDL_Log("+ button was pressed!");
                         break;
                     case SDLK_MINUS:
-                        //ChangeDirection(snake, Snake::Direction::kUp,
-                        //Snake::Direction::kDown);
+                        keys.minus = true;
+                        //SDL_Log("- button was pressed!");
                         break;
-                    case SDLK_UP:
-                        //ChangeDirection(snake, Snake::Direction::kUp,
-                        //Snake::Direction::kDown);
+                    case SDLK_h:
+                        keys.heat = true;
+                        //SDL_Log("SPACE button was pressed!");
                         break;
-
-                    case SDLK_DOWN:
-                        //ChangeDirection(snake, Snake::Direction::kDown,
-                        //Snake::Direction::kUp);
-                        break;
-
-                    case SDLK_LEFT:
-                        //ChangeDirection(snake, Snake::Direction::kLeft,
-                        //Snake::Direction::kRight);
-                        break;
-
-                    case SDLK_RIGHT:
-                        //ChangeDirection(snake, Snake::Direction::kRight,
-                        //Snake::Direction::kLeft);
+                    case SDLK_c:
+                        keys.cool = true;
+                        //SDL_Log("SPACE button was pressed!");
                         break;
                 }
                 break;
@@ -47,7 +39,6 @@ void Controller::HandleInput(bool &running) const {
             case SDL_MOUSEBUTTONDOWN:
                 switch (e.button.button) {
                     case SDL_BUTTON_LEFT:
-
                         //SDL_Log("Left button was pressed!");
                         break;
                     case SDL_BUTTON_RIGHT:
@@ -62,7 +53,6 @@ void Controller::HandleInput(bool &running) const {
             case SDL_MOUSEBUTTONUP:
                 switch (e.button.button) {
                     case SDL_BUTTON_LEFT:
-
                         // SDL_Log("Left button was up!");
                         break;
                     case SDL_BUTTON_RIGHT:
@@ -77,16 +67,10 @@ void Controller::HandleInput(bool &running) const {
             case SDL_MOUSEMOTION:
                 int mouseX = e.motion.x;
                 int mouseY = e.motion.y;
-                /*
-                    std::stringstream ss;
-                    ss << "X: " << mouseX << " Y: " << mouseY;
-                    SDL_SetWindowTitle(window, ss.str().c_str());
-                */
                 //SDL_Log("Mouse at position %d %d \n", mouseX, mouseY);
                 break;
         }
 
     }
-
 
 }

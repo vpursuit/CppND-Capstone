@@ -1,3 +1,6 @@
+//
+// Created by Trebing, Peter on 2019-08-27.
+//
 #ifndef GAME_H
 #define GAME_H
 
@@ -10,14 +13,14 @@
 #include "particlePhysics2D.h"
 #include "configuration.h"
 
-class Game {
+class Simulation {
 
 public:
-    Game(Configuration configuration);
+    Simulation(Configuration configuration);
 
-    ~Game();
+    ~Simulation();
 
-    void Run(Controller const &controller,
+    void Run(Controller &controller,
              Renderer &renderer,
              std::size_t target_frame_duration);
 
@@ -38,7 +41,7 @@ private:
 
     void PlaceParticles(int const count);
 
-    void placeMolecule(Molecule *molecule);
+    void placeMolecule(Molecule *molecule, Vector3 velocity);
 };
 
 #endif

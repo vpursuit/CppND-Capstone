@@ -1,5 +1,6 @@
 //
-// Created by Trebing, Peter on 2019-08-22.
+// This file is a derived work from
+// https://github.com/idmillington/cyclone-physics/blob/master/src/core.cpp (MIT
 //
 
 /*

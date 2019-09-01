@@ -5,7 +5,7 @@
 #include <future>
 #include <mutex>
 #include <memory>
-#include "physic.h"
+#include "simpleNewtonPhysics.h"
 
 void Physics::update(std::vector<Particle> particles) {
 

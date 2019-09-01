@@ -1,7 +1,6 @@
 //
 // Created by Trebing, Peter on 2019-08-27.
 //
-
 #ifndef COLLISIONSIM_CONFIGURATION_H
 #define COLLISIONSIM_CONFIGURATION_H
 
@@ -10,6 +9,9 @@
 #include <algorithm>
 #include <unordered_map>
 
+/**
+ * Configuration can load and maintain configuration parameters
+ */
 class Configuration {
 
 public:
@@ -30,6 +32,10 @@ public:
         collision_limit = getIntParameter("collision_limit");
     }
 
+    /**
+     * Loads key value pairs from specified file and stores data in private members
+     * @param filename  name of file
+     */
     void load(std::string filename = Configuration::DEFAULT_CONFIGFILE) {
         {
             // std::ifstream is RAII, i.e. no need to call close
@@ -54,25 +60,46 @@ public:
         };
     };
 
+    // Getter and Setters for all configuration attributes
     std::size_t getFPS() { return fps; }
+
+    void setFPS(std::size_t fps) { this->fps = fps; }
 
     std::size_t getWindowWidth() { return window_width; }
 
+    void setWindowWidth(std::size_t width) { window_width = width; }
+
     std::size_t getWindowHeight() { return window_height; }
+
+    void setWindowHeight(std::size_t height) { window_height = height; }
 
     std::size_t getPhysicIntervalMs() { return physic_interval_ms; }
 
+    void setPhysicIntervalMs(std::size_t interval) { physic_interval_ms = interval; }
+
     std::size_t getParticleCount() { return particle_count; }
+
+    void setParticleCount(std::size_t count) { particle_count = count; }
 
     std::size_t getParticleRenderLimit() { return particle_render_limit; }
 
+    void setParticleRenderLimit(std::size_t limit) { particle_render_limit = limit; }
+
     std::size_t getCollisionLimit() { return collision_limit; }
+
+    void setCollisionLimit(std::size_t limit) { collision_limit = limit; }
 
     double getParticleVelocityRange() { return particle_velocity_range; }
 
+    void setParticleVelocityRange(double range) { particle_velocity_range = range; }
+
     double getDamping() { return damping; }
 
+    void setDamping(double damping) { this->damping = damping; }
+
     double getGravityFactor() { return gravity_factor; }
+
+    void setGravityFactor(double factor) { gravity_factor = factor; }
 
 private:
 

@@ -10,6 +10,9 @@
 #include "stoppable.h"
 #include "configuration.h"
 
+/**
+ *
+ */
 class PatrticlePhysics2D : public Stoppable {
 
 public:
@@ -23,10 +26,28 @@ public:
 
     ~PatrticlePhysics2D();
 
+    /**
+     * Run the integration (change in velocity over time, apply gravity force).
+     * This method is intended to be used in its own thread
+     */
     void run();
 
+    /**
+    * Do the collision detection and resolvation
+    * This method is intended to be used in its own thread
+    */
     void collider();
 
+    /**
+     * Accelerate simulation objects which marked as Sensitivity::sensitive
+     * @param factor multiply the actual velocity by the specified factor
+     */
+    void changeEnergy(double factor);
+
+    /**
+     * Returns the number of resolved detected and resolved collsions since last call.
+     * Example: When called once per second, you get the #collisions/second
+     */
     std::size_t getCollisionsSincelastCall() {
         std::lock_guard<std::mutex> uLock(_mutex);
         std::size_t result = collisions;
@@ -50,6 +71,5 @@ private:
     Configuration config;
 
 };
-
 
 #endif //COLLISIONSIM_PARTICLEPHYSICS2D_H

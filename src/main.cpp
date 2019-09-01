@@ -1,6 +1,6 @@
 #include <iostream>
 #include "controller.h"
-#include "game.h"
+#include "simulation.h"
 #include "renderer.h"
 #include "configuration.h"
 
@@ -18,9 +18,9 @@ int main() {
     // Initialize a render object
     Renderer renderer(config);
     Controller controller;
-    Game game(config);
+    Simulation game(config);
     game.Run(controller, renderer, kMsPerFrame);
 
-    std::cout << "Game has terminated successfully!\n";
+    std::cout << "Simulation has terminated successfully!\n";
     return 0;
 }

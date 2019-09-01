@@ -1,24 +1,11 @@
 //
-// Created by Trebing, Peter on 2019-08-22.
+// This file is a derived (but not copied) work from
+// https://github.com/idmillington/cyclone-physics/blob/master/include/cyclone/particle.h
 //
 
 #ifndef COLLISIONSIM_PARTICLE_H
 #define COLLISIONSIM_PARTICLE_H
-
-/*
- * Interface file for the particle class.
- * 
- * Part of the sim physics system.
- * 
- * Copyright (c) Icosagon 2003. All Rights Reserved.
- *
- * This software is distributed under licence. Use of this software
- * implies agreement with all terms and conditions of the accompanying
- * software licence.
- */
-
 #include "mathtools.h"
-//#include "simulationObject.h"
 
 class Particle {
 

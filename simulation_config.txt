@@ -8,13 +8,13 @@ window_height=400
 fps=60
 
 #Particles
-particle_count=100
+particle_count=50
 
 #render only every n'th particle
 particle_render_limit=1
 
 #Velocity range from -n .. n
-particle_velocity_range=1000
+particle_velocity_range=500
 
 # Set physics simulation to maximum speed
 physic_interval_ms=0
@@ -23,7 +23,7 @@ physic_interval_ms=0
 collision_limit=10000000
 
 # Take away energy from the particle system
-damping=0.6
+damping=0.4
 
 # the n'th factor of gravity
 gravity_factor=100.0

@@ -15,5 +15,5 @@ find_package(Threads REQUIRED)
 
 include_directories(${SDL2_INCLUDE_DIRS} src)
 
-add_executable(CollisionSim src/main.cpp src/game.cpp src/controller.cpp src/renderer.cpp src/particle.h src/mathtools.h src/mathtools.cpp src/particle.cpp src/physic.h src/physic.cpp src/simulationObject.h src/particlePhysics2D.h src/particlePhysics2D.cpp src/synchronizedList.h src/stoppable.h src/configuration.h)
+add_executable(CollisionSim src/main.cpp src/simulation.cpp src/controller.cpp src/renderer.cpp src/particle.h src/mathtools.h src/mathtools.cpp src/particle.cpp src/simpleNewtonPhysics.h src/simpleNewtonPhysics.cpp src/simulationObject.h src/particlePhysics2D.h src/particlePhysics2D.cpp src/synchronizedList.h src/stoppable.h src/configuration.h)
 target_link_libraries(CollisionSim Threads::Threads ${SDL2_LIBRARIES})

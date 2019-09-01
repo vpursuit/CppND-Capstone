@@ -7,6 +7,9 @@
 #include "simulationObject.h"
 #include "configuration.h"
 
+/**
+ * SDL rendere interface for the simulator
+ */
 class Renderer {
 public:
 

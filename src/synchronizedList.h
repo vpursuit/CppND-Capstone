@@ -32,7 +32,7 @@ public:
         // perform vector modification under the lock
         std::lock_guard<std::recursive_mutex> uLock(_mutex);
 
-        // remove last vector element from queue
+        // remove last vector keys from queue
         std::shared_ptr<T> v = std::move(_items.back());
         _items.pop_back();
 

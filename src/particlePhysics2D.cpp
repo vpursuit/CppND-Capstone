@@ -6,10 +6,17 @@
 #include <utility>
 #include "particlePhysics2D.h"
 
+// Representation of a point in 2D
 struct Point {
     double x, y;
 };
 
+/** Checks if two rectangles do intersect - used to check for collision
+ * @param l1 left upper point of rechtangle 1
+ * @param r1 right lower point of rechtangle 1
+ * @param l2 left upper point of rechtangle 2
+ * @param r2 right lower point of rechtangle 2
+ */
 bool hasIntersection(Point l1, Point r1, Point l2, Point r2) {
 
     // If one rectangle is on left side of other
@@ -23,6 +30,15 @@ bool hasIntersection(Point l1, Point r1, Point l2, Point r2) {
     return true;
 }
 
+/**
+ * Computes the necessary displacement of two rectangles after collsion - to prevent
+ * detecting a collision over and over again
+ * @param l1 left upper point of rechtangle 1
+ * @param r1 right lower point of rechtangle 1
+ * @param l2 left upper point of rechtangle 3
+ * @param r2 right lower point of rechtangle 2
+ * @return a vector instance representing  the displacement in component x and y (z will always be 0)
+ */
 Vector3 getDisplacement(Point l1, Point r1, Point l2, Point r2) {
 
     Vector3 result;
@@ -243,5 +259,16 @@ PatrticlePhysics2D::resolveCollisions(std::shared_ptr<SimulationObject> &obj1,
     part1.setVelocity(v1Next);
     part2.setVelocity(v2Next);
 
+}
+
+void PatrticlePhysics2D::changeEnergy(double factor) {
+    _particles.map([factor](std::shared_ptr<SimulationObject> &obj, size_t i) -> bool {
+        if (obj->getSensitivity() == Sensitivity::sensitive) {
+            Particle &part = obj->getParticle();
+            Vector3 velocity = part.getVelocity();
+            part.setVelocity(velocity * factor);
+        }
+        return false;
+    });
 }
 

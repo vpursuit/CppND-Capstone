@@ -2,8 +2,8 @@
 // Created by Trebing, Peter on 2019-08-22.
 //
 
-#ifndef COLLISIONSIM_PHYSIC_H
-#define COLLISIONSIM_PHYSIC_H
+#ifndef COLLISIONSIM_SIMPLENEWTONPHYSICS_H
+#define COLLISIONSIM_SIMPLENEWTONPHYSICS_H
 
 #include "particle.h"
 
@@ -18,4 +18,4 @@ private:
 
 };
 
-#endif //COLLISIONSIM_PHYSIC_H
+#endif //COLLISIONSIM_SIMPLENEWTONPHYSICS_H
