@@ -2,6 +2,15 @@
 
 This is the Udacity C++ Nanodegree Capstone project of Peter Trebing.
 
+##### Table of Contents  
+[Introduction](#Introduction) 
+[User interaction](#User-interaction)   
+[Configuration](#Standard-configuration) 
+[Howto build and run](#Howto-build-and-run) 
+[Implementation](#Implementation)
+ 
+## Introduction 
+
 This project is a greatly simplified simulation of the atmosphere and the greenhouse effect. It implements a particle system which represents three athmospheric gas molecules: 
 
 - N2, nitrogen (grey particles)
@@ -76,8 +85,8 @@ You do not necessarily need to change the configuration. It is designed to run t
  ...and  many more...
 ```
 
-
-## Dependencies for Running Locally
+## Howto build and run
+### Prerequisites for Running Locally
 * cmake >= 3.7
   * All OSes: [click here for installation instructions](https://cmake.org/install/)
 * make >= 4.1 (Linux, Mac), 3.81 (Windows)
@@ -92,7 +101,7 @@ You do not necessarily need to change the configuration. It is designed to run t
   * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
   * Windows: recommend using [MinGW](http://www.mingw.org/)
 
-## Build Instructions
+### Build Instructions
 1. git clone https://github.com/vpursuit/CppND-Capstone.git
 2. Compile: `cmake . && make`
 3. Run it: `./CollisionSim`.
