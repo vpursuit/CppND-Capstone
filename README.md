@@ -3,11 +3,11 @@
 This is the Udacity C++ Nanodegree Capstone project of Peter Trebing.
 
 ##### Table of Contents  
-[Introduction](#Introduction) 
-[User interaction](#User-interaction)   
-[Configuration](#Standard-configuration) 
-[Howto build and run](#Howto-build-and-run) 
-[Implementation](#Implementation)
+[Introduction](#Introduction)<br/> 
+[User interaction](#User-interaction) <br/>  
+[Configuration](#Standard-configuration) <br/>
+[Howto build and run](#Howto-build-and-run) <br/>
+[Implementation](#Implementation)<br/>
  
 ## Introduction 
 
