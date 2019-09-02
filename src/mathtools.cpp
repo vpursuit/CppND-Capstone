@@ -1,6 +1,6 @@
 //
 // This file is a derived work from
-// https://github.com/idmillington/cyclone-physics/blob/master/src/core.cpp (MIT
+// https://github.com/idmillington/cyclone-physics/blob/master/src/core.cpp
 //
 
 /*
