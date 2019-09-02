@@ -4,7 +4,7 @@ This is the Udacity C++ Nanodegree Capstone project of Peter Trebing.
 
 ##### Table of Contents  
 [Introduction](#Introduction)<br/> 
-[User interaction](#User-interaction)<br/>  
+[User interaction](#User-interaction)<br/>
 [Configuration](#Configuration)<br/>
 [Howto build and run](#Howto-build-and-run)<br/>
 [Implementation](#Implementation)<br/>
