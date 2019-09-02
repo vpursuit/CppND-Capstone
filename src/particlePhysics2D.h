@@ -56,6 +56,7 @@ public:
     std::size_t getCollisionsSincelastCall() {
         std::lock_guard<std::mutex> uLock(_mutex);
         std::size_t result = collisions;
+        collisions = 0;
         return result;
     }
 

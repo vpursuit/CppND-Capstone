@@ -1,13 +1,11 @@
-# CPPND: Capstone of Peter Trebing
+# CPPND: Capstone project of Peter Trebing
 
 This is the Udacity C++ Nanodegree Capstone project of Peter Trebing.
 
 This project is a simplified simulation of the atmosphere and the greenhouse effect. 
-It implements a particle system which represents different athmospheric gases like N2, O2 and CO2. The simulation of physics and representation is done in separate and independent threads.
+It implements a particle system which represents three athmospheric gases molecules N2, O2 and CO2. 
 
-The Capstone Project gives you a chance to integrate what you've learned throughout this program. This project will become an important part of your portfolio to share with current and future colleagues and employers.
-
-In this project, you can build your own C++ application or extend this Snake game, following the principles you have learned throughout this Nanodegree Program. This project will demonstrate that you can independently create applications using a wide range of C++ features.
+![](CollisionSim.gif)
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
@@ -33,9 +31,14 @@ In this project, you can build your own C++ application or extend this Snake gam
 
 ## USAGE
 
+This simulation allows the following user inputs:
+
 | Shortcut        | Action                        | 
 | :-------------: |:-----------------------------:| 
-| H               | accelerate the CO2 molecules  |
-| +               | add more N2 and O2 molecules  |
-| -               | remove N2 and O2 molecuules   |
-| CTRL-Q          | exits the simulation          |
+| H               | Accelerate the CO2 molecules  |
+| +               | Add more N2 and O2 molecules  |
+| -               | Remove N2 and O2 molecuules   |
+| CTRL-Q          | Exits the simulation          |
+
+###Implementation
+The simulation of physics and representation is done in separate and independent threads.

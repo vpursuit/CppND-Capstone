@@ -91,7 +91,7 @@ void Renderer::render(SimulationObjects &particles) {
 }
 
 void Renderer::UpdateWindowTitle(std::size_t particleCount, std::size_t fps, std::size_t collPerSec) {
-    std::string title{"Molecules: " + std::to_string(particleCount) + " FPS: " + std::to_string(fps) + " Coll/sec: " +
+    std::string title{ " FPS: " + std::to_string(fps) + " | Molecules: " + std::to_string(particleCount)  + " | Collisions/sec: " +
                       std::to_string(collPerSec)};
     SDL_SetWindowTitle(sdl_window, title.c_str());
 }

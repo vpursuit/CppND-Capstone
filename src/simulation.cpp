@@ -75,13 +75,13 @@ void Simulation::Run(Controller &controller, Renderer &renderer,
             if (keys.plus) {
                 placeMolecule(new N2(), Vector3());
                 placeMolecule(new O2(), Vector3());
-                config.setParticleCount(config.getParticleCount() + 2);
             }
-            if (keys.minus) {
+            if (keys.minus && _particles.size() > 1) {
+                physics2D.removeNonSensitiveObject();
                 physics2D.removeNonSensitiveObject();
             }
 
-            //if (keys.minus) physics2D.removeParticle();
+            // Reset the pressed keys for next loop
             keys = KeyState{false, false, false};
 
             // Compute physics in extra thread and only render here
@@ -94,7 +94,7 @@ void Simulation::Run(Controller &controller, Renderer &renderer,
             long timeSinceLastWindowsUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(
                     frame_end - title_timestamp).count();
             if (timeSinceLastWindowsUpdate >= 1000) {
-                renderer.UpdateWindowTitle(config.getParticleCount(), frame_count,
+                renderer.UpdateWindowTitle(_particles.size(), frame_count,
                                            physics2D.getCollisionsSincelastCall());
                 frame_count = 0;
                 title_timestamp = frame_end;

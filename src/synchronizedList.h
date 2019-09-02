@@ -57,8 +57,7 @@ public:
         std::lock_guard<std::recursive_mutex> uLock(_mutex);
         size_t i = 0;
         for (auto &part: _items) {
-            ++i;
-            if (f(part, i)) break;
+            if (f(part, i++)) break;
         }
     }
 
