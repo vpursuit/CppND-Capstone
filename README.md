@@ -27,7 +27,7 @@ The simulation allows the following user inputs:
 | -               | Remove N2 and O2 molecuules   |
 | CTRL-Q          | Exits the simulation          |
 
-###Heat up the atmosphere
+### Heat up the atmosphere
 To heat up the atmosphere, you can accelerate the CO2 molecules 
 by pressing the 'H' key. This simulates the irradiation of solar energy. 
 The CO2 molecules then collide randomly with N2 and O2 molecules and transfer 
@@ -35,17 +35,16 @@ part of their kinetic energy so that the total energy and thus the temperature o
 gas(atmosphere) rises. Because of the simulated friction between gas molecules, the energy of 
 the whole system declines again. Over time the molecules become slower again.
 
-###Add more molecules
+### Add more molecules
 You can increase the density of the atmosphere by pressing '+'. This adds new N2 and O2 molecules.
 Be careful with this, because it increases the computing effort, 
 slows down the simulation and reduces the frame rate.
 
-###Remove molecules
+### Remove molecules
 Decrease the atmospheric density by pressing '-'.
 
-###Stop the simulation
+### Stop the simulation
 By pressing CTRL-Q you can stop the simulation.
-
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
