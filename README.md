@@ -94,9 +94,11 @@ You do not necessarily need to change the configuration. It is designed to run t
 
 ## Build Instructions
 1. git clone https://github.com/vpursuit/CppND-Capstone.git
-2. Make a build directory in the top level directory: `mkdir build && cd build`
-3. Compile: `cmake .. && make`
-4. Run it: `./CollisionSim`.
+2. Compile: `cmake . && make`
+3. Run it: `./CollisionSim`.
+
+Note:
+Be sure you run CollisionSim in the same directory as the file simulation_config.txt
 
 ## Implementation
 In order to distribute the computing load among the hardware, the simulation utilizes 3 independent Threads:
