@@ -4,9 +4,9 @@ This is the Udacity C++ Nanodegree Capstone project of Peter Trebing.
 
 ##### Table of Contents  
 [Introduction](#Introduction)<br/> 
-[User interaction](#User-interaction) <br/>  
-[Configuration](#Standard-configuration) <br/>
-[Howto build and run](#Howto-build-and-run) <br/>
+[User interaction](#User-interaction)<br/>  
+[Configuration](#Configuration)<br/>
+[Howto build and run](#Howto-build-and-run)<br/>
 [Implementation](#Implementation)<br/>
  
 ## Introduction 
@@ -66,7 +66,7 @@ Decrease the atmospheric density by pressing '-'. This will remove 2 molecules b
 ### Stop the simulation
 If it gets too hot for you :), you can terminate the simulation by pressing CTRL-Q.
 
-## Standard configuration
+## Configuration
 All standard settings of the simulation are located in a file named 'simulation_config.txt'. This file is read by class configuration.h, which reads the file and contains getters (and setters) for all configuration parameter.
 You do not necessarily need to change the configuration. It is designed to run the simulation smoothly on the Udacity cloud infrastructure. Here is an excerpt: 
 ```
