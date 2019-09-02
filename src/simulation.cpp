@@ -17,8 +17,8 @@ Simulation::Simulation(Configuration configuration) :
         random_w(0, static_cast<int>(configuration.getWindowWidth())),
         random_h(0, static_cast<int>(configuration.getWindowHeight())),
         random_v(-configuration.getParticleVelocityRange(), configuration.getParticleVelocityRange()),
-        _particles(SimulationObjects()),
-        physics2D(PatrticlePhysics2D(configuration, _particles)) {
+        _simulatedObjects(SimulationObjects()),
+        physics2D(PatrticlePhysics2D(configuration, _simulatedObjects)) {
 
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine engine(seed);
@@ -76,7 +76,7 @@ void Simulation::Run(Controller &controller, Renderer &renderer,
                 placeMolecule(new N2(), Vector3());
                 placeMolecule(new O2(), Vector3());
             }
-            if (keys.minus && _particles.size() > 1) {
+            if (keys.minus && _simulatedObjects.size() > 1) {
                 physics2D.removeNonSensitiveObject();
                 physics2D.removeNonSensitiveObject();
             }
@@ -85,7 +85,7 @@ void Simulation::Run(Controller &controller, Renderer &renderer,
             keys = KeyState{false, false, false};
 
             // Compute physics in extra thread and only render here
-            renderer.render(_particles);
+            renderer.render(_simulatedObjects);
 
             frame_count++;
 
@@ -94,7 +94,7 @@ void Simulation::Run(Controller &controller, Renderer &renderer,
             long timeSinceLastWindowsUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(
                     frame_end - title_timestamp).count();
             if (timeSinceLastWindowsUpdate >= 1000) {
-                renderer.UpdateWindowTitle(_particles.size(), frame_count,
+                renderer.UpdateWindowTitle(_simulatedObjects.size(), frame_count,
                                            physics2D.getCollisionsSincelastCall());
                 frame_count = 0;
                 title_timestamp = frame_end;
@@ -143,7 +143,7 @@ void Simulation::placeMolecule(Molecule *molecule, Vector3 velocity) {
             part.setVelocity(velocity);
             part.setAcceleration(Vector3(Vector3::GRAVITY) * -config.getGravityFactor());
             part.setDamping(config.getDamping());
-            _particles.pushBack(std::move(m));
+            _simulatedObjects.pushBack(std::move(m));
             break;
         }
     }

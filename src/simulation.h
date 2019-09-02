@@ -29,7 +29,7 @@ private:
     Configuration config;
 
     PatrticlePhysics2D physics2D;
-    SimulationObjects _particles;
+    SimulationObjects _simulatedObjects;
 
     std::random_device dev;
     std::mt19937 engine;

@@ -7,7 +7,7 @@ It implements a particle system which represents three athmospheric gas molecule
 
 - N2, nitrogen (grey particles)
 - O2, oxygen  (red particles)
-- CO2, carbon dioxide (black, bold particles)
+- CO2, carbon dioxide (the black, bold very bad particles :)
 
 Note: The proportions are not to scale. 
 
@@ -81,7 +81,7 @@ Here is an excerpt:
  #Particles
  particle_count=200
  
- ...
+ ...and  many more...
 ```
 
 
@@ -165,7 +165,7 @@ SynchronizedList::void map(const std::function<bool(std::shared_ptr<T> &part, si
 Of course the map function works under a lock_guard. A simpler example how to use this can be found in particlePhysics2D::changeEnergy
 ``` 
 void PatrticlePhysics2D::changeEnergy(double factor) {
-    _particles.map([factor](std::shared_ptr<SimulationObject> &obj, size_t i) -> bool {
+    _simulatedObjects.map([factor](std::shared_ptr<SimulationObject> &obj, size_t i) -> bool {
         if (obj->getSensitivity() == Sensitivity::sensitive) {
             Particle &part = obj->getParticle();
             Vector3 velocity = part.getVelocity();
@@ -189,13 +189,42 @@ void map(const std::function<bool(std::shared_ptr<T> &part, size_t)> &f) {
 ```
 
 ### SimulationObject and its derivatives
-The abstract class SimulationObject ist an aggregation of a Particle (particle.h), which defines physical attributes and the visual outline of the object like color and size. The class molecule (molecule.h) inherits this abstractions and add concrete implementation for color and size. The classes N2, O2 and CO2 (see: molecule.h), for their part,
-inherit from class molecule, but define concrete values for the particle instance, the color and the size.
+The strict abstract class SimulationObject ist an aggregation of a Particle (particle.h), which defines physical attributes and the visual outline of the object like color and size. Because it's virtual it does not define an implementation for the methods delivering the visual outline.
+The class molecule (molecule.h) inherits this abstractions and add concrete implementation for color and size. The classes N2, O2 and CO2 (see: molecule.h), for their part,
+inherit from class molecule, but define concrete values for the particle instance, the color and the size. In summary, I use aggregation, inheritance and abstract classes.
 
 ### Particles and Math
 The physical particles are defined in class particle.h. A math toolbox, containing a vector implementation and basic linear algebra is located in mathtools.h.
 
 Note:
 the files particle.h/cpp and mathools.h/cpp contain derived work from the great github project
-https://github.com/idmillington/cyclone-physics/blob/master/src/core.cpp (MIT license).
+https://github.com/idmillington/cyclone-physics (MIT license).
+
+### Memory management
+The synchronized list makes use of shared pointers to make sure that the object behind the pointer is deleted after the last reference left its scope. The push_back method uses move semantics, so that the inserted smart pointer does not belong to any special thread, 
+but is located solely inside the vector:
+``` 
+    void pushBack(std::shared_ptr<T> &&v) {
+        // perform vector modification under the lock
+        std::lock_guard<std::recursive_mutex> uLock(_mutex);
+        _items.emplace_back(std::move(v));
+    }
+```
+
+The application of this can be seen in Simulation::PlaceMolecule, where a new molecule is instantiated and then added to _simulatedObjects:
+
+``` 
+void Simulation::placeMolecule(Molecule *molecule, Vector3 velocity) {
+  ... // skipped
+            std::unique_ptr<SimulationObject> m(molecule); // creates a molecule
+            Particle &part = m->getParticle(); // aquire reference to particle of that molecule
+            part.setPosition(x, y, 0.0);
+            part.setVelocity(velocity);
+            part.setAcceleration(Vector3(Vector3::GRAVITY) * -config.getGravityFactor());
+            part.setDamping(config.getDamping());
+            // after all set and done add the new molecule to the list of simulated objects:
+            _simulatedObjects.pushBack(std::move(m)); // using move semantics to outsource the smart_pointer from main thread
+... // skipped
+}
+```
 
