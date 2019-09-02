@@ -68,7 +68,7 @@ void Simulation::Run(Controller &controller, Renderer &renderer,
         // Its time to render a frame to met the fps spec.
         if (timeSinceLastUpdate >= target_frame_duration) {
 
-            // Input, integrate, render - the main game loop.
+            // Input, render - the main game loop.
             controller.HandleInput(running, keys);
             if (keys.heat) physics2D.changeEnergy(2.0f);
             if (keys.cool) physics2D.changeEnergy(0.5f);
